@@ -21,6 +21,9 @@ new-posting.pdf ──────▶ --advisor ◀─────────�
 
 Sample output, generated from public job postings and a **fictional** resume, is in [`examples/`](examples/).
 
+> [!NOTE]
+> This started as a final project for an applied AI course in my college program. It has since been reworked into a standalone tool.
+
 ## Requirements
 
 - Node.js 26 or later, and pnpm 11 (`corepack enable` picks the pinned version)
