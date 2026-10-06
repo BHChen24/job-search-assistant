@@ -6,7 +6,7 @@ A TypeScript CLI that turns a folder of job-posting PDFs and your resume into th
 2. **Resume gap analysis** (`--gap`): compares your resume against that market. It lists strengths and sorts each gap as `quick-win`, `short-term`, `medium-term`, or `long-term`, with one concrete next step per gap.
 3. **Application advisor** (`--advisor <pdf>`): checks whether a new posting looks legitimate (WHOIS, web research), scores your fit, and writes an HTML report with tailoring advice and likely interview questions.
 
-Every stage is a bounded tool-calling agent built on [`pi-agent-core`](https://www.npmjs.com/package/@earendil-works/pi-agent-core). Results come back through `submit_*` tools that use provider-side constrained sampling (`strict` JSON Schema) and are re-validated with Zod. The model has no way to return free-form JSON. See [`docs/design-notes.md`](docs/design-notes.md) for the reasoning, evaluation results, and known limitations.
+Every stage is a bounded tool-calling agent built on [pi](https://pi.dev)'s [`pi-agent-core`](https://github.com/earendil-works/pi/tree/main/packages/agent) runtime. Results come back through `submit_*` tools that use provider-side constrained sampling (`strict` JSON Schema) and are re-validated with Zod. The model has no way to return free-form JSON. See [`docs/design-notes.md`](docs/design-notes.md) for the reasoning, evaluation results, and known limitations.
 
 ```text
 raw_data/jobs/*.pdf ──▶ --market ──▶ data/jobs/*.json
@@ -35,6 +35,18 @@ Sample output, generated from public job postings and a **fictional** resume, is
 
 > [!NOTE]
 > This started as a final project for an applied AI course in my college program. It has since been reworked into a standalone tool.
+
+## Built with
+
+| Project | Role |
+| :--- | :--- |
+| [**pi**](https://pi.dev) ([GitHub](https://github.com/earendil-works/pi)) | Agent framework. [`pi-agent-core`](https://github.com/earendil-works/pi/tree/main/packages/agent) runs each stage's tool-calling loop. [`pi-ai`](https://github.com/earendil-works/pi/tree/main/packages/ai) provides the OpenRouter provider and its per-token cost catalogue. |
+| [OpenRouter](https://openrouter.ai) | Routes every LLM call; the default model is DeepSeek V4 Flash |
+| [Zod](https://zod.dev) | Schemas for every model, tool, and file boundary, converted to strict JSON Schema for the provider |
+| [Tavily](https://tavily.com) | Web search for company research and legitimacy evidence |
+| [WhoisXML API](https://whoisxmlapi.com) | Domain registration lookups |
+| [pdf-parse](https://www.npmjs.com/package/pdf-parse) | PDF text extraction |
+| [Commander](https://github.com/tj/commander.js), [Vitest](https://vitest.dev), [Biome](https://biomejs.dev) | CLI, tests, lint and format |
 
 ## Requirements
 
