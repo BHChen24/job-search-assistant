@@ -126,8 +126,8 @@ const runInTemp = async <T>(
 	const root = await mkdtemp(join(tmpdir(), "market-analysis-"));
 	try {
 		return await callback({
-			analysis: join(root, "data/analysis/market-analysis.json"),
-			report: join(root, "reports/market-analysis.md"),
+			analysis: join(root, "output/market/analysis.json"),
+			report: join(root, "output/market/report.md"),
 		});
 	} finally {
 		await rm(root, { force: true, recursive: true });

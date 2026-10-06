@@ -165,7 +165,7 @@ export const renderMarketReport = (analysis: MarketAnalysis): string => {
 		`- Analyzed postings: ${analysis.analyzedPostingCount}`,
 		`- Failed inputs: ${analysis.failedInputCount}`,
 		`- Unavailable company research: ${analysis.unavailableResearchCount}`,
-		"- Supporting job records for each trend: `data/analysis/market-analysis.json`",
+		"- Supporting job records for each trend: `output/market/analysis.json`",
 		"",
 		...renderSection(
 			"Required Skills and Technologies",

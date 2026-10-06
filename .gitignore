@@ -1,18 +1,10 @@
-# Private raw inputs
-raw_data/jobs/*
-raw_data/resume/*
-raw_data/postings/*
-!raw_data/jobs/.gitkeep
-!raw_data/resume/.gitkeep
-!raw_data/postings/.gitkeep
-
-# Generated output can contain resume details and third-party posting text.
-# Curated, sanitized samples live in examples/ instead.
-data/**/*
-!data/*/
-!data/**/.gitkeep
-reports/*
-!reports/.gitkeep
+# Private inputs and generated output. Generated reports quote the resume and
+# third-party postings; curated, sanitized samples live in examples/ instead.
+input/**
+!input/*/
+!input/**/.gitkeep
+!input/README.md
+output/
 
 # Personal documents and local secrets
 *.pdf

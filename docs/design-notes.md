@@ -104,6 +104,8 @@ The aggregate step kept failing as `provider`. The real cause was an 8,000-token
 
 **Fix:** raise the cap to 32,000, give truncation its own failure type that is never retried with an identical request, and log the provider message. An error taxonomy only helps if the catch-all case is rare and its detail is logged.
 
+The cap is still tight. On the 13-posting example run, the first aggregate attempt was truncated again; the retry finished at 24.9k output tokens. The typed failure made that a clear message instead of corrupt output, but larger posting sets will need either a higher cap or an aggregate that works in chunks.
+
 ### Commands that only knew their original scope
 
 `--clean` was written when only the market stage existed and never learned about the later outputs. A stale gap analysis then sat next to a fresh market analysis with nothing to show they no longer matched. Separately, the advisor wrote one fixed report path, so a second run destroyed the first.

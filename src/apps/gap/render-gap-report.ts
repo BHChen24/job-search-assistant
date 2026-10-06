@@ -79,7 +79,7 @@ export const renderGapReport = (analysis: GapAnalysis): string => {
 		"",
 		"## Evidence",
 		"",
-		"- Supporting data for each gap: `data/analysis/gap-analysis.json`",
+		"- Supporting data for each gap: `output/gap/analysis.json`",
 		"",
 	];
 	return `${lines.join("\n").trimEnd()}\n`;

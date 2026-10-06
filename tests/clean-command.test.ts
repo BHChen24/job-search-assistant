@@ -33,37 +33,44 @@ describe("clean command", () => {
 	it("Given generated outputs and private inputs, When cleaned, Then only generated files are removed", async () => {
 		const root = await mkdtemp(join(tmpdir(), "clean-command-"));
 		try {
-			const jobsDataDir = join(root, "data", "jobs");
-			const rawInputDir = join(root, "raw_data", "jobs");
-			await mkdir(jobsDataDir, { recursive: true });
-			await mkdir(rawInputDir, { recursive: true });
-			const analysisDir = join(root, "data", "analysis");
-			const resumeDir = join(root, "data", "resume");
-			const analysisPath = join(analysisDir, "market.json");
-			const gapPath = join(analysisDir, "gap-analysis.json");
-			const reportsDir = join(root, "reports");
-			const reportPath = join(reportsDir, "market.md");
-			const gapReportPath = join(reportsDir, "gap-analysis.md");
-			const applicationHtmlPath = join(reportsDir, "application-report.html");
-			const applicationArchivePath = join(
-				reportsDir,
-				"application-acme-dev-20260807-221500.html",
-			);
-			await mkdir(analysisDir, { recursive: true });
-			await mkdir(resumeDir, { recursive: true });
-			await mkdir(join(root, "reports"), { recursive: true });
+			const cacheDir = join(root, "output", "cache");
+			const jobsDataDir = join(cacheDir, "postings");
+			const rawInputDir = join(root, "input", "postings");
+			const marketDir = join(root, "output", "market");
+			const gapDir = join(root, "output", "gap");
+			const advisorDir = join(root, "output", "advisor");
+			const analysisPath = join(marketDir, "analysis.json");
+			const reportPath = join(marketDir, "report.md");
+			const gapPath = join(gapDir, "analysis.json");
+			const gapReportPath = join(gapDir, "report.md");
+			for (const dir of [
+				jobsDataDir,
+				rawInputDir,
+				marketDir,
+				gapDir,
+				advisorDir,
+			]) {
+				await mkdir(dir, { recursive: true });
+			}
 			await writeFile(join(jobsDataDir, "role-1.json"), "{}");
 			await writeFile(join(jobsDataDir, "role-2.json"), "{}");
 			await writeFile(join(jobsDataDir, ".gitkeep"), "");
 			await writeFile(analysisPath, "{}");
-			await writeFile(gapPath, "{}");
-			await writeFile(join(analysisDir, "application-acme-dev.json"), "{}");
-			await writeFile(join(analysisDir, "application-globex-sre.json"), "{}");
 			await writeFile(reportPath, "# report");
+			await writeFile(gapPath, "{}");
 			await writeFile(gapReportPath, "# gap");
-			await writeFile(applicationHtmlPath, "<!doctype html>");
-			await writeFile(applicationArchivePath, "<!doctype html>");
-			await writeFile(join(resumeDir, "resume.json"), "{}");
+			await writeFile(join(advisorDir, "latest.html"), "<!doctype html>");
+			await writeFile(
+				join(advisorDir, "acme-dev-20260807-221500.html"),
+				"<!doctype html>",
+			);
+			await writeFile(join(advisorDir, "acme-dev-20260807-221500.json"), "{}");
+			await writeFile(
+				join(advisorDir, "globex-sre-20260808-090000.json"),
+				"{}",
+			);
+			await writeFile(join(advisorDir, ".gitkeep"), "");
+			await writeFile(join(cacheDir, "resume.json"), "{}");
 			await writeFile(join(rawInputDir, "private.pdf"), "private bytes");
 			const io = collect();
 
@@ -73,23 +80,11 @@ describe("clean command", () => {
 					directories: [
 						{ dir: jobsDataDir, match: (name) => name.endsWith(".json") },
 						{
-							dir: analysisDir,
-							match: (name) =>
-								name.startsWith("application-") && name.endsWith(".json"),
-						},
-						{
-							dir: reportsDir,
-							match: (name) =>
-								name.startsWith("application-") && name.endsWith(".html"),
+							dir: advisorDir,
+							match: (name) => name.endsWith(".json") || name.endsWith(".html"),
 						},
 					],
-					filePaths: [
-						analysisPath,
-						reportPath,
-						gapPath,
-						gapReportPath,
-						applicationHtmlPath,
-					],
+					filePaths: [analysisPath, reportPath, gapPath, gapReportPath],
 				},
 				io.output,
 			);
@@ -98,9 +93,13 @@ describe("clean command", () => {
 			expect(io.stdout()).toBe("Clean: removed 10 generated file(s).\n");
 			expect(io.stderr()).toBe("");
 			expect(await readdir(jobsDataDir)).toEqual([".gitkeep"]);
-			expect(await readdir(analysisDir)).toEqual([]);
-			expect(await readdir(join(root, "reports"))).toEqual([]);
-			expect(await readdir(resumeDir)).toEqual(["resume.json"]);
+			expect(await readdir(marketDir)).toEqual([]);
+			expect(await readdir(gapDir)).toEqual([]);
+			expect(await readdir(advisorDir)).toEqual([".gitkeep"]);
+			expect((await readdir(cacheDir)).sort()).toEqual([
+				"postings",
+				"resume.json",
+			]);
 			expect(await readdir(rawInputDir)).toEqual(["private.pdf"]);
 		} finally {
 			await rm(root, { force: true, recursive: true });

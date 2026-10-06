@@ -167,9 +167,9 @@ describe("gap analysis preconditions", () => {
 				writeGapReportSafe: async () => {
 					wrote = true;
 				},
-				marketAnalysisPath: join(root, "market-analysis.json"),
-				analysisPath: join(root, "gap-analysis.json"),
-				reportPath: join(root, "gap-analysis.md"),
+				marketAnalysisPath: join(root, "market", "analysis.json"),
+				analysisPath: join(root, "gap", "analysis.json"),
+				reportPath: join(root, "gap", "report.md"),
 				model: agent.model,
 				streamFn: agent.streamFn,
 				searchTool: { search: async () => ({ kind: "unused" }) as never },

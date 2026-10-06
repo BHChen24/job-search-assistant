@@ -46,7 +46,7 @@ export const registerMarketCommand = (program: Command): void => {
 		.option("--market", "Run the job market analysis")
 		.addHelpText(
 			"after",
-			"\nMarket analysis:\n  Reads every job-posting PDF in raw_data/jobs/ and writes data/jobs/*.json,\n  data/analysis/market-analysis.json, and reports/market-analysis.md. Reruns validate and\n  skip unchanged posting caches; aggregate analysis refreshes only when current inputs or\n  failures change. --verbose sends diagnostics to stderr. OpenRouter/Tavily calls may incur\n  costs. Never pass secrets as flags.\n",
+			"\nMarket analysis:\n  Reads every job-posting PDF in input/postings/ and writes output/cache/postings/*.json,\n  output/market/analysis.json, and output/market/report.md. Reruns validate and\n  skip unchanged posting caches; aggregate analysis refreshes only when current inputs or\n  failures change. --verbose sends diagnostics to stderr. OpenRouter/Tavily calls may incur\n  costs. Never pass secrets as flags.\n",
 		);
 };
 

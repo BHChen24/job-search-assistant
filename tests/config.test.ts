@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { ConfigurationError, readMarketConfig } from "../src/config.js";
 import {
-	ANALYSIS_DATA_DIR,
+	ADVISOR_DIR,
 	DEFAULT_JOBS_INPUT_DIR,
 	JOBS_DATA_DIR,
 	MARKET_ANALYSIS_JSON_PATH,
@@ -57,7 +57,7 @@ describe("market runtime configuration", () => {
 		const paths = [
 			DEFAULT_JOBS_INPUT_DIR,
 			JOBS_DATA_DIR,
-			ANALYSIS_DATA_DIR,
+			ADVISOR_DIR,
 			MARKET_ANALYSIS_JSON_PATH,
 			MARKET_REPORT_PATH,
 		];

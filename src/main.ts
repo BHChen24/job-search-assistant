@@ -28,8 +28,7 @@ import {
 } from "./config.js";
 import { configureLogger } from "./logger.js";
 import {
-	ANALYSIS_DATA_DIR,
-	APPLICATION_REPORT_PATH,
+	ADVISOR_DIR,
 	DEFAULT_JOBS_INPUT_DIR,
 	GAP_ANALYSIS_JSON_PATH,
 	GAP_REPORT_PATH,
@@ -37,7 +36,6 @@ import {
 	MARKET_ANALYSIS_JSON_PATH,
 	MARKET_REPORT_PATH,
 	PROJECT_ROOT,
-	REPORTS_DIR,
 } from "./paths.js";
 
 type RootOptions = {
@@ -88,14 +86,8 @@ const run = async (): Promise<void> => {
 			directories: [
 				{ dir: JOBS_DATA_DIR, match: (name) => name.endsWith(".json") },
 				{
-					dir: ANALYSIS_DATA_DIR,
-					match: (name) =>
-						name.startsWith("application-") && name.endsWith(".json"),
-				},
-				{
-					dir: REPORTS_DIR,
-					match: (name) =>
-						name.startsWith("application-") && name.endsWith(".html"),
+					dir: ADVISOR_DIR,
+					match: (name) => name.endsWith(".json") || name.endsWith(".html"),
 				},
 			],
 			filePaths: [
@@ -103,7 +95,6 @@ const run = async (): Promise<void> => {
 				MARKET_REPORT_PATH,
 				GAP_ANALYSIS_JSON_PATH,
 				GAP_REPORT_PATH,
-				APPLICATION_REPORT_PATH,
 			],
 		},
 		io,

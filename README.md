@@ -9,15 +9,13 @@ A TypeScript CLI that turns a folder of job-posting PDFs and your resume into th
 Every stage is a bounded tool-calling agent built on [pi](https://pi.dev)'s [`pi-agent-core`](https://github.com/earendil-works/pi/tree/main/packages/agent) runtime. Results come back through `submit_*` tools that use provider-side constrained sampling (`strict` JSON Schema) and are re-validated with Zod. The model has no way to return free-form JSON. See [`docs/design-notes.md`](docs/design-notes.md) for the reasoning, evaluation results, and known limitations.
 
 ```text
-raw_data/jobs/*.pdf ──▶ --market ──▶ data/jobs/*.json
-                                    data/analysis/market-analysis.json ──┐
-                                    reports/market-analysis.md           │
-raw_data/resume/*.pdf ─▶ --gap ────▶ data/resume/resume.json ─────────────┤
-                                    data/analysis/gap-analysis.json      │
-                                    reports/gap-analysis.md              │
-new-posting.pdf ──────▶ --advisor ◀───────────────────────────────────────┘
-                          └──▶ reports/application-report.html
+input/postings/*.pdf ───▶ --market ──▶ output/market/analysis.json, report.md ──┐
+input/resume/*.pdf ─────▶ --gap ─────▶ output/gap/analysis.json, report.md ─────┤
+input/candidates/*.pdf ─▶ --advisor ◀───────────────────────────────────────────┘
+                              └──▶ output/advisor/latest.html
 ```
+
+Per-posting extractions and the parsed resume are cached in `output/cache/`.
 
 Sample output, generated from public job postings and a **fictional** resume, is in [`examples/`](examples/).
 
@@ -73,7 +71,7 @@ pnpm start --help
 
 ### Market analysis
 
-Put 8 or more related job-posting PDFs in `raw_data/jobs/`:
+Put 8 or more related job-posting PDFs in `input/postings/`:
 
 ```bash
 pnpm start --market
@@ -84,35 +82,35 @@ Reruns are incremental. Each posting's cached record is validated and reused, an
 
 ### Resume gap analysis
 
-Put exactly one resume PDF in `raw_data/resume/`, then run `--market` first:
+Put exactly one resume PDF in `input/resume/`, then run `--market` first:
 
 ```bash
 pnpm start --gap
 ```
 
-The extracted resume is cached in `data/resume/resume.json`, so later runs don't re-extract an unchanged PDF.
+The extracted resume is cached in `output/cache/resume.json`, so later runs don't re-extract an unchanged PDF.
 
 ### Application advisor
 
-Pass a posting that was **not** part of the market set. `raw_data/postings/` is a convenient place for it:
+Pass a posting that was **not** part of the market set. `input/candidates/` is a convenient place for it:
 
 ```bash
-pnpm start --advisor raw_data/postings/new-posting.pdf
+pnpm start --advisor input/candidates/new-posting.pdf
 ```
 
 The advisor needs `--market` and `--gap` to have run first. The report has five sections and puts legitimacy first:
 
 | Path | Contents |
 | :--- | :--- |
-| `reports/application-report.html` | Latest report, overwritten each run |
-| `reports/application-<slug>-<stamp>.html` | Per-run archive |
-| `data/analysis/application-<slug>-<stamp>.json` | The same report as structured data |
+| `output/advisor/latest.html` | Latest report, overwritten each run |
+| `output/advisor/<slug>-<stamp>.html` | Per-run archive |
+| `output/advisor/<slug>-<stamp>.json` | The same report as structured data |
 
 Repeat runs never overwrite their archives, so two runs of one posting can be compared:
 
 ```bash
-diff <(jq -S . data/analysis/application-<slug>-<stamp1>.json) \
-     <(jq -S . data/analysis/application-<slug>-<stamp2>.json)
+diff <(jq -S . output/advisor/<slug>-<stamp1>.json) \
+     <(jq -S . output/advisor/<slug>-<stamp2>.json)
 ```
 
 ### Cleaning generated output
@@ -122,7 +120,7 @@ pnpm start --clean            # remove generated data and reports
 pnpm start --clean --market   # clean, then regenerate
 ```
 
-`--clean` keeps `raw_data/`, `.env`, and `data/resume/resume.json`. Delete that file by hand to force the resume to be read again. After re-running `--market`, re-run `--gap` and `--advisor` too, or they will still reflect the old market.
+`--clean` keeps `input/`, `.env`, and `output/cache/resume.json`. Delete that file by hand to force the resume to be read again. After re-running `--market`, re-run `--gap` and `--advisor` too, or they will still reflect the old market.
 
 ## Observability
 
@@ -140,7 +138,7 @@ Cost shows `unavailable` when OpenRouter's catalogue has no per-token rates for 
 
 ## Privacy
 
-Resumes and postings stay on your machine except for the text sent to OpenRouter and the company names and domains sent to Tavily and WhoisXML. Everything under `raw_data/`, `data/`, and `reports/` is gitignored, because generated reports quote your resume. API keys are never logged, and neither is the WHOIS request URL, which contains the key.
+Resumes and postings stay on your machine except for the text sent to OpenRouter and the company names and domains sent to Tavily and WhoisXML. Everything under `input/` and `output/` is gitignored, because generated reports quote your resume. API keys are never logged, and neither is the WHOIS request URL, which contains the key.
 
 ## Development
 

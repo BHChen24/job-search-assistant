@@ -224,8 +224,8 @@ describe("market source identity", () => {
 		const root = await mkdtemp(join(tmpdir(), "job-store-atomic-"));
 		try {
 			const fingerprint = "c".repeat(64);
-			const analysisPath = join(root, "analysis", "market-analysis.json");
-			const reportPath = join(root, "reports", "market-analysis.md");
+			const analysisPath = join(root, "market", "analysis.json");
+			const reportPath = join(root, "market", "report.md");
 			const analysis = marketAnalysisSchema.parse({
 				schemaVersion: 1,
 				aggregateFingerprint: fingerprint,
