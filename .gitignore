@@ -1,0 +1,28 @@
+# Private raw inputs
+raw_data/jobs/*
+raw_data/resume/*
+raw_data/postings/*
+!raw_data/jobs/.gitkeep
+!raw_data/resume/.gitkeep
+!raw_data/postings/.gitkeep
+
+# Generated output can contain resume details and third-party posting text.
+# Curated, sanitized samples live in examples/ instead.
+data/**/*
+!data/*/
+!data/**/.gitkeep
+reports/*
+!reports/.gitkeep
+
+# Personal documents and local secrets
+*.pdf
+*.doc
+*.docx
+.env
+.env.*
+!.env.example
+
+# Tooling
+node_modules/
+coverage/
+.omo/

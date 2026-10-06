@@ -1,0 +1,58 @@
+% Fictional resume used to generate the sample outputs in examples/.
+% Every name, employer, school, and contact detail here is invented.
+% Build: pdflatex -output-directory=raw_data/resume examples/inputs/sample-resume.tex
+\documentclass[10pt]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.2em,itemsep=1pt,topsep=2pt}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\newcommand{\sect}[1]{\vspace{6pt}{\large\bfseries #1}\\[-6pt]\rule{\linewidth}{0.4pt}\\[2pt]}
+\newcommand{\role}[3]{\textbf{#1} \hfill #3\\\textit{#2}\\[-4pt]}
+
+\begin{document}
+
+{\LARGE\bfseries Jordan Rivera}\\[2pt]
+Toronto, ON \quad|\quad jordan.rivera@example.com \quad|\quad (555) 010-0142 \quad|\quad github.com/example-jordan
+
+\sect{Summary}
+Junior full-stack developer with two years of professional experience building REST services in Java and
+TypeScript web front ends. Comfortable with relational databases, CI pipelines, and writing tests. Looking
+for a developer role on a product team.
+
+\sect{Skills}
+\textbf{Languages:} Java, TypeScript, JavaScript, Python, SQL\\
+\textbf{Frameworks:} Spring Boot, React, Node.js, Express\\
+\textbf{Data:} PostgreSQL, MySQL, Redis\\
+\textbf{Tools:} Git, GitHub Actions, Docker, Linux, Jest, JUnit
+
+\sect{Experience}
+\role{Software Developer}{Northwind Logistics (fictional), Toronto, ON}{Jun 2024 -- Present}
+\begin{itemize}
+  \item Built and maintained Spring Boot REST endpoints for shipment tracking used by internal dispatch teams.
+  \item Moved a nightly batch report from a cron script to a containerized job, cutting run time from 40 to 12 minutes.
+  \item Added integration tests against a PostgreSQL test container, raising service test coverage from 45\% to 78\%.
+  \item Reviewed pull requests and wrote onboarding docs for two new hires.
+\end{itemize}
+
+\role{Junior Web Developer (Co-op)}{Brightleaf Analytics (fictional), Mississauga, ON}{Sep 2023 -- Apr 2024}
+\begin{itemize}
+  \item Built React dashboard components that display customer usage metrics from a Node.js/Express API.
+  \item Fixed accessibility issues found in an audit, including keyboard navigation and colour contrast.
+  \item Wrote SQL queries and views for the reporting database.
+\end{itemize}
+
+\sect{Projects}
+\textbf{Recipe Planner} --- TypeScript, React, Express, PostgreSQL\\
+Meal-planning web app with user accounts, a shopping-list generator, and a GitHub Actions pipeline that runs tests and deploys a Docker image.
+
+\textbf{Transit Delay Notifier} --- Python, Redis\\
+Polls a public transit feed and sends alerts when a saved route is delayed; caches feed responses in Redis.
+
+\sect{Education}
+\textbf{Diploma, Software Development} \hfill 2021 -- 2024\\
+Lakeshore Technical College (fictional), Toronto, ON\\
+Relevant coursework: Data Structures and Algorithms, Database Systems, Web Programming, Operating Systems.
+
+\end{document}
