@@ -21,6 +21,18 @@ new-posting.pdf ──────▶ --advisor ◀─────────�
 
 Sample output, generated from public job postings and a **fictional** resume, is in [`examples/`](examples/).
 
+## Highlights
+
+- **Structured output enforced by the provider.** Agents can only return results through `submit_*` tools whose JSON Schema is generated from Zod and sent with `strict: true`. Every tool argument is parsed with Zod again before use, so a lenient endpoint can't pass invalid data through. Zod is the single source of truth; there are no hand-written duplicate schemas.
+- **Every loop has a limit.** Agent turn caps (6 for extraction, 8 elsewhere), per-agent tool budgets, 32k output token caps, and timeouts and bounded retries on direct API calls. A misbehaving model hits a typed failure instead of running up a bill.
+- **It says what it doesn't know.** Missing posting fields come back as `null`, not guesses. A failed search or a privacy-redacted WHOIS record counts as *unavailable evidence*, never as proof that a company is fake. Code, not the model, decides whether company research succeeded. Unknown cost is printed as `unavailable`, never as a fake `$0`.
+- **Legitimacy comes first.** Before scoring fit, the advisor checks a posting's domain age through WHOIS and looks for corroborating evidence on the web. That verdict leads the report, with its evidence and limitations listed.
+- **Web content is treated as data.** Every prompt tells the model that posting text, search results, and WHOIS records are untrusted evidence, never instructions, which guards against prompt injection from the documents it reads.
+- **Cheap reruns.** Each posting is cached under a content fingerprint and its cached JSON is validated against the current schema before reuse. Only new or edited PDFs cost another model call.
+- **Fails gracefully.** PDF, OpenRouter, Tavily, and WHOIS errors become typed outcomes that end up in the report's limitations instead of crashing the run.
+- **Offline tests.** The unit suite uses fakes at every external boundary: no network, no keys, no private files. It includes regression tests built from real model output that once broke the system. CI runs lint, typecheck, and tests on every push.
+- **Private by default.** API keys and the WHOIS request URL are never logged. Inputs and generated reports are gitignored, since reports quote your resume.
+
 > [!NOTE]
 > This started as a final project for an applied AI course in my college program. It has since been reworked into a standalone tool.
 
